@@ -129,6 +129,13 @@ document.addEventListener('DOMContentLoaded', function () {
             img.style.maxWidth = '300px'; // Limit image size
             img.style.maxHeight = '200px'; // Prevent overflow
             img.style.objectFit = 'cover';
+
+            // Hide the image if it fails to load
+            img.onerror = function () {
+                img.style.display = 'none';
+                console.warn(`Image not found: ${imageUrl}`);
+            };
+
             imageContainer.appendChild(img);
         });
 
