@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
     const output = document.getElementById('outputField');
-    let previousState = []; // Стек для збереження попередніх станів
+    const topSection = document.createElement('div'); // Верхня секція для вибору марки
+    const middleSection = document.createElement('div'); // Середня секція для вибору моделей
+    const yearSection = document.createElement('div'); // Секція для вибору років
+    const bottomSection = document.createElement('div'); // Нижня секція для відображення фото
+    output.appendChild(topSection);
+    output.appendChild(middleSection);
+    output.appendChild(yearSection);
+    output.appendChild(bottomSection);
 
     // Fetch data from sample.json on page load
     fetch('js/image_sources.json')
@@ -17,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
-            output.innerHTML = `<p style="color: red;">Не вдалося завантажити дані. Перевірте файл sample.json.</p>`;
+            bottomSection.innerHTML = `<p style="color: red;">Не вдалося завантажити дані. Перевірте файл sample.json.</p>`;
         });
 
     // Parse the JSON data into a structured format
@@ -42,68 +49,71 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function showBrands(data) {
-        // Clear the output field
-        output.innerHTML = '<h2>Марки авто:</h2>';
+        // Clear the top section
+        topSection.innerHTML = '<h2>Марки авто:</h2>';
 
-        // Save current state
-        previousState = [];
+        // Sort brands alphabetically
+        const sortedBrands = Object.keys(data).sort();
 
         // Create a button for each brand
-        Object.keys(data).forEach(brand => {
+        sortedBrands.forEach(brand => {
             const brandButton = document.createElement('button');
             brandButton.textContent = brand;
             brandButton.addEventListener('click', function () {
-                previousState.push(() => showBrands(data)); // Save current state
                 showModels(data[brand], brand);
             });
-            output.appendChild(brandButton);
+            topSection.appendChild(brandButton);
         });
+
+        // Clear the middle, year, and bottom sections
+        middleSection.innerHTML = '';
+        yearSection.innerHTML = '';
+        bottomSection.innerHTML = '';
     }
 
     function showModels(brandData, brand) {
-        // Clear the output field
-        output.innerHTML = `<h2>Моделі для марки: ${brand}</h2>`;
+        // Clear the middle section
+        middleSection.innerHTML = `<h2>Моделі для марки: ${brand}</h2>`;
 
-        // Add "Назад" button
-        addBackButton();
+        // Sort models alphabetically
+        const sortedModels = Object.keys(brandData).sort();
 
         // Create a button for each model
-        Object.keys(brandData).forEach(model => {
+        sortedModels.forEach(model => {
             const modelButton = document.createElement('button');
             modelButton.textContent = model;
             modelButton.addEventListener('click', function () {
-                previousState.push(() => showModels(brandData, brand)); // Save current state
                 showYears(brandData[model], brand, model);
             });
-            output.appendChild(modelButton);
+            middleSection.appendChild(modelButton);
         });
+
+        // Clear the year and bottom sections
+        yearSection.innerHTML = '';
+        bottomSection.innerHTML = '';
     }
 
     function showYears(modelData, brand, model) {
-        // Clear the output field
-        output.innerHTML = `<h2>Роки для моделі: ${model} (${brand})</h2>`;
-
-        // Add "Назад" button
-        addBackButton();
+        // Clear the year section
+        yearSection.innerHTML = `<h2>Роки для моделі: ${model} (${brand})</h2>`;
 
         // Create a button for each year
         Object.keys(modelData).forEach(year => {
             const yearButton = document.createElement('button');
             yearButton.textContent = year;
             yearButton.addEventListener('click', function () {
-                previousState.push(() => showYears(modelData, brand, model)); // Save current state
                 showImages(modelData[year], brand, model, year);
             });
-            output.appendChild(yearButton);
+            yearSection.appendChild(yearButton);
         });
+
+        // Clear the bottom section
+        bottomSection.innerHTML = '';
     }
 
     function showImages(images, brand, model, year) {
-        // Clear the output field
-        output.innerHTML = `<h2>Фото для ${brand} ${model} (${year}):</h2>`;
-
-        // Add "Назад" button
-        addBackButton();
+        // Clear the bottom section
+        bottomSection.innerHTML = `<h2>Фото для ${brand} ${model} (${year}):</h2>`;
 
         // Display all images for the selected year
         const imageContainer = document.createElement('div');
@@ -122,20 +132,6 @@ document.addEventListener('DOMContentLoaded', function () {
             imageContainer.appendChild(img);
         });
 
-        output.appendChild(imageContainer);
-    }
-
-    function addBackButton() {
-        const backButton = document.createElement('button');
-        backButton.textContent = 'Назад';
-        backButton.style.display = 'block';
-        backButton.style.marginBottom = '10px';
-        backButton.addEventListener('click', function () {
-            if (previousState.length > 0) {
-                const lastState = previousState.pop(); // Get the last saved state
-                lastState(); // Call the saved state function
-            }
-        });
-        output.appendChild(backButton);
+        bottomSection.appendChild(imageContainer);
     }
 });
