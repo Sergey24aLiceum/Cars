@@ -9,6 +9,8 @@ window.addEventListener('load', () => {
 document.addEventListener('DOMContentLoaded', function () {
     const output = document.getElementById('outputField');
     const fileSelector = document.getElementById('dataFile');
+    const uploadFileButton = document.getElementById('uploadFileButton');
+    const fileInput = document.getElementById('fileInput');
     const topSection = document.createElement('div'); // Верхня секція для вибору марки
     const middleSection = document.createElement('div'); // Середня секція для вибору моделей
     const yearSection = document.createElement('div'); // Секція для вибору років
@@ -40,6 +42,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Завантаження даних із початкового файлу
     loadData(fileSelector.value);
+
+    // Обробка кнопки "Вибрати файл"
+    uploadFileButton.addEventListener('click', () => {
+        fileInput.click(); // Відкриваємо діалог вибору файлу
+    });
+
+    // Обробка вибраного файлу
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    const parsedData = parseData(data);
+                    showBrands(parsedData);
+                } catch (error) {
+                    console.error('Помилка при обробці файлу:', error);
+                    output.innerHTML = `<p style="color: red;">Неправильний формат файлу. Завантажте коректний JSON-файл.</p>`;
+                }
+            };
+            reader.readAsText(file);
+        }
+    });
 
     function loadData(file) {
         fetch(file)
