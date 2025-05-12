@@ -7,9 +7,30 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="center-block">
-        <div id="outputField"></div> <!-- Контейнер для виводу -->
+    <!-- Вибір файлу -->
+    <div id="fileSelector">
+        <label for="dataFile">Виберіть файл даних:</label>
+        <select id="dataFile">
+            <option value="js/image_sources.json">image_sources.json</option>
+            <option value="js/sample.json">sample.json</option>
+        </select>
     </div>
+
+    <div id="outputField"></div> <!-- Контейнер для динамічного контенту -->
+
+    <!-- Модальне вікно -->
+    <div id="modal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-controls">
+            <span class="prev">&#10094;</span>
+            <span class="next">&#10095;</span>
+        </div>
+    </div>
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+
     <script src="js/script.js"></script>
 </body>
 </html>
