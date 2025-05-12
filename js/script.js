@@ -8,7 +8,8 @@ window.addEventListener('load', () => {
 
 document.addEventListener('DOMContentLoaded', function () {
     const output = document.getElementById('outputField');
-    const fileSelector = document.getElementById('dataFile');
+    const siteFiles = document.getElementById('siteFiles');
+    const pcFiles = document.getElementById('pcFiles');
     const uploadFileButton = document.getElementById('uploadFileButton');
     const fileInput = document.getElementById('fileInput');
     const topSection = document.createElement('div'); // Верхня секція для вибору марки
@@ -26,29 +27,23 @@ document.addEventListener('DOMContentLoaded', function () {
     output.appendChild(yearSection);
     output.appendChild(bottomSection);
 
-    const modal = document.getElementById('modal');
-    const modalImage = document.getElementById('modalImage');
-    const closeBtn = document.querySelector('.close');
-    const prevBtn = document.querySelector('.prev');
-    const nextBtn = document.querySelector('.next');
-    let currentImageIndex = 0;
     let currentImages = [];
 
-    // Завантаження даних при зміні файлу
-    fileSelector.addEventListener('change', () => {
-        const selectedFile = fileSelector.value;
+    // Завантаження даних із файлів на сайті
+    siteFiles.addEventListener('change', () => {
+        const selectedFile = siteFiles.value;
         loadData(selectedFile);
     });
 
     // Завантаження даних із початкового файлу
-    loadData(fileSelector.value);
+    loadData(siteFiles.value);
 
     // Обробка кнопки "Вибрати файл"
     uploadFileButton.addEventListener('click', () => {
         fileInput.click(); // Відкриваємо діалог вибору файлу
     });
 
-    // Обробка вибраного файлу
+    // Обробка вибраного файлу з ПК
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -58,12 +53,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     const data = JSON.parse(e.target.result);
                     const parsedData = parseData(data);
                     showBrands(parsedData);
+
+                    // Додаємо файл у випадаючий список для файлів з ПК
+                    let customOption = document.createElement('option');
+                    customOption.value = file.name;
+                    customOption.dataset.fileContent = e.target.result; // Зберігаємо вміст файлу
+                    customOption.textContent = file.name;
+                    pcFiles.appendChild(customOption);
+                    pcFiles.value = file.name; // Вибираємо цей файл
                 } catch (error) {
                     console.error('Помилка при обробці файлу:', error);
                     output.innerHTML = `<p style="color: red;">Неправильний формат файлу. Завантажте коректний JSON-файл.</p>`;
                 }
             };
             reader.readAsText(file);
+        }
+    });
+
+    // Завантаження даних із файлів з ПК
+    pcFiles.addEventListener('change', () => {
+        const selectedOption = pcFiles.options[pcFiles.selectedIndex];
+        const fileContent = selectedOption.dataset.fileContent;
+        if (fileContent) {
+            loadCustomFile(fileContent);
         }
     });
 
@@ -83,6 +95,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('There was a problem with the fetch operation:', error);
                 output.innerHTML = `<p style="color: red;">Не вдалося завантажити дані з файлу ${file}. Перевірте файл.</p>`;
             });
+    }
+
+    function loadCustomFile(fileContent) {
+        try {
+            const data = JSON.parse(fileContent);
+            const parsedData = parseData(data);
+            showBrands(parsedData);
+        } catch (error) {
+            console.error('Помилка при обробці файлу:', error);
+            output.innerHTML = `<p style="color: red;">Неправильний формат файлу. Завантажте коректний JSON-файл.</p>`;
+        }
     }
 
     function parseData(data) {

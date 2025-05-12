@@ -7,20 +7,27 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Вибір файлу -->
-    <div id="fileSelector">
-        <label for="dataFile">Виберіть файл даних:</label>
-        <select id="dataFile">
-            <option value="js/image_sources.json">image_sources.json</option>
-            <option value="js/sample.json">sample.json</option>
-        </select>
-        <button id="uploadFileButton">Вибрати файл</button>
-        <input type="file" id="fileInput" accept=".json" style="display: none;">
+    <!-- Вибір файлів -->
+    <div id="fileSelectors">
+        <div>
+            <label for="siteFiles">Файли на сайті:</label>
+            <select id="siteFiles">
+                <option value="js/sample.json">sample.json</option>
+                <option value="js/image_sources.json">image_sources.json</option>
+            </select>
+        </div>
+        <div>
+            <label for="pcFiles">Файли з ПК:</label>
+            <select id="pcFiles">
+                <option value="" disabled selected>Виберіть файл з ПК</option>
+            </select>
+            <button id="uploadFileButton">Вибрати файл</button>
+            <input type="file" id="fileInput" accept=".json" style="display: none;">
+        </div>
     </div>
 
     <div id="outputField"></div> <!-- Контейнер для динамічного контенту -->
 
-    <!-- Модальне вікно -->
     <div id="modal" class="modal">
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImage">
