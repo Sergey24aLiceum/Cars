@@ -143,9 +143,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const sortedBrands = Object.keys(data).sort();
 
-        sortedBrands.forEach(brand => {
+        sortedBrands.forEach((brand, index) => {
             const brandButton = document.createElement('button');
             brandButton.textContent = brand;
+            brandButton.classList.add('brand-button');
+            brandButton.style.setProperty('--delay', `${index * 0.1}s`); // Затримка для анімації
             brandButton.addEventListener('click', function () {
                 showModels(data[brand], brand);
                 middleSection.classList.add('active'); // Анімація появи
