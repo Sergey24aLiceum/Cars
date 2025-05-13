@@ -29,6 +29,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let currentImages = [];
 
+    // Отримуємо елементи модального вікна
+    const modal = document.getElementById('modal');
+    const modalImage = document.getElementById('modalImage');
+    const closeBtn = modal.querySelector('.close');
+    const prevBtn = modal.querySelector('.prev');
+    const nextBtn = modal.querySelector('.next');
+
+    let currentImageIndex = 0;
+
     // Завантаження даних із файлів на сайті
     siteFiles.addEventListener('change', () => {
         const selectedFile = siteFiles.value;
@@ -192,6 +201,8 @@ document.addEventListener('DOMContentLoaded', function () {
         imageContainer.style.justifyContent = 'center';
         imageContainer.style.gap = '10px';
 
+        currentImages = []; // Очищуємо список актуальних зображень
+
         images.forEach((imageUrl, index) => {
             const img = document.createElement('img');
             img.src = imageUrl;
@@ -203,32 +214,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Перевірка на співвідношення сторін
             img.onload = function () {
-                if (img.naturalWidth === img.naturalHeight) {
-                    img.style.display = 'none'; // Приховати фото 1:1
+                if (img.naturalWidth !== img.naturalHeight) {
+                    currentImages.push(imageUrl); // Додаємо лише фото, які не 1:1
+                    imageContainer.appendChild(img);
                 }
             };
 
             img.onerror = function () {
-                img.style.display = 'none'; // Приховати фото, які не завантажуються
                 console.warn(`Image not found: ${imageUrl}`);
             };
 
             img.addEventListener('click', () => {
-                openModal(index);
+                openModal(currentImages.indexOf(imageUrl)); // Відкриваємо модальне вікно
             });
-
-            imageContainer.appendChild(img);
         });
 
         bottomSection.appendChild(imageContainer);
-
-        currentImages = images;
     }
 
     // Відкрити модальне вікно
     function openModal(index) {
         currentImageIndex = index;
         modalImage.src = currentImages[currentImageIndex];
+        modalImage.style.width = '80%'; // Встановлюємо однаковий розмір для всіх фото
+        modalImage.style.height = 'auto';
         modal.style.display = 'flex';
     }
 

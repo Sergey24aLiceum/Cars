@@ -132,10 +132,10 @@ button:hover {
 
 .modal-controls {
     position: absolute;
+    top: 50%;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
 }
@@ -146,8 +146,9 @@ button:hover {
     cursor: pointer;
     font-size: 2rem;
     color: white;
-    padding: 10px;
     background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    padding: 10px 20px;
     border-radius: 50%;
     user-select: none;
     transition: background-color 0.3s ease;
@@ -155,31 +156,15 @@ button:hover {
 
 .modal-controls .prev:hover,
 .modal-controls .next:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Кнопки для перегортання фото */
-.modal-controls .prev,
-.modal-controls .next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    color: white;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 .modal-controls .prev {
-    left: 10%;
+    margin-left: 10px;
 }
 
 .modal-controls .next {
-    right: 10%;
+    margin-right: 10px;
 }
 
 .close {
